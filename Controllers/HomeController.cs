@@ -1,4 +1,6 @@
 using System.Diagnostics;
+using Azure.Identity;
+using Azure.Storage.Blobs;
 using Microsoft.AspNetCore.Mvc;
 using FirstAzureWebApp.Models;
 
@@ -18,8 +20,16 @@ public class HomeController : Controller
         return View();
     }
 
-    public IActionResult Privacy()
+    public async Task<IActionResult> Privacy()
     {
+        var blobServiceClient =
+            new BlobServiceClient(new Uri("https://nsvstorageaccount001.blob.core.windows.net"),
+                new DefaultAzureCredential());
+        var containerClient = blobServiceClient.GetBlobContainerClient("nsv-container");
+        var blobClient = containerClient.GetBlobClient("uploaded-sample.txt");
+        await using FileStream uploadFileStream = System.IO.File.OpenRead("sample.txt");
+        await blobClient.UploadAsync(uploadFileStream, overwrite: true);
+        uploadFileStream.Close();
         return View();
     }
 
