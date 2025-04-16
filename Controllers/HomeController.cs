@@ -1,5 +1,7 @@
 using System.Diagnostics;
+using Azure.Core;
 using Azure.Identity;
+using Azure.Security.KeyVault.Secrets;
 using Azure.Storage.Blobs;
 using Microsoft.AspNetCore.Mvc;
 using FirstAzureWebApp.Models;
@@ -22,6 +24,13 @@ public class HomeController : Controller
 
     public async Task<IActionResult> Privacy()
     {
+        await UploadFileAsync();
+        ViewBag.SecretValue = await GetScretVault();
+        return View();
+    }
+
+    private async Task UploadFileAsync()
+    {
         var blobServiceClient =
             new BlobServiceClient(new Uri("https://nsvstorageaccount001.blob.core.windows.net"),
                 new DefaultAzureCredential());
@@ -31,8 +40,26 @@ public class HomeController : Controller
         await using FileStream uploadFileStream = System.IO.File.OpenRead(filePath);
         await blobClient.UploadAsync(uploadFileStream, overwrite: true);
         uploadFileStream.Close();
+    }
 
-        return View();
+    private async Task<string> GetScretVault()
+    {
+        var options = new SecretClientOptions()
+        {
+            Retry =
+            {
+                Delay= TimeSpan.FromSeconds(2),
+                MaxDelay = TimeSpan.FromSeconds(16),
+                MaxRetries = 5,
+                Mode = RetryMode.Exponential
+            }
+        };
+
+        var client = new SecretClient(new Uri("https://nsv-private-keyvault.vault.azure.net/"),
+            new DefaultAzureCredential(),options);
+        KeyVaultSecret secret = await client.GetSecretAsync("secret01");
+
+        return secret.Value;
     }
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
