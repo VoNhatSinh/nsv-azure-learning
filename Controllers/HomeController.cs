@@ -22,22 +22,15 @@ public class HomeController : Controller
 
     public async Task<IActionResult> Privacy()
     {
-        try
-        {
-            var blobServiceClient =
-                new BlobServiceClient(new Uri("https://nsvstorageaccount001.blob.core.windows.net"),
-                    new DefaultAzureCredential());
-            var containerClient = blobServiceClient.GetBlobContainerClient("nsv-container");
-            string filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "sample.txt");
-            var blobClient = containerClient.GetBlobClient("uploaded-sample.txt");
-            await using FileStream uploadFileStream = System.IO.File.OpenRead(filePath);
-            await blobClient.UploadAsync(uploadFileStream, overwrite: true);
-            uploadFileStream.Close();
-        }
-        catch (Exception e)
-        {
-            ViewBag.Message = e.Message;
-        }
+        var blobServiceClient =
+            new BlobServiceClient(new Uri("https://nsvstorageaccount001.blob.core.windows.net"),
+                new DefaultAzureCredential());
+        var containerClient = blobServiceClient.GetBlobContainerClient("nsv-container");
+        string filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "sample.txt");
+        var blobClient = containerClient.GetBlobClient("uploaded-sample.txt");
+        await using FileStream uploadFileStream = System.IO.File.OpenRead(filePath);
+        await blobClient.UploadAsync(uploadFileStream, overwrite: true);
+        uploadFileStream.Close();
 
         return View();
     }
