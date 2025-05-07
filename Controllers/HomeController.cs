@@ -32,6 +32,11 @@ public class HomeController : Controller
         return View();
     }
 
+    public async Task<IActionResult> DemoError()
+    {
+        throw new Exception("new error occured");
+    }
+
     private async Task UploadFileAsync()
     {
         var blobServiceClient =
