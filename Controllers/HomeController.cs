@@ -5,26 +5,29 @@ using Azure.Security.KeyVault.Secrets;
 using Azure.Storage.Blobs;
 using Microsoft.AspNetCore.Mvc;
 using FirstAzureWebApp.Models;
+using Microsoft.ApplicationInsights;
 
 namespace FirstAzureWebApp.Controllers;
 
 public class HomeController : Controller
 {
-    private readonly ILogger<HomeController> _logger;
+    private readonly TelemetryClient _telemetry;
 
-    public HomeController(ILogger<HomeController> logger)
+    public HomeController(TelemetryClient telemetry)
     {
-        _logger = logger;
+        _telemetry = telemetry;
     }
 
     public IActionResult Index()
     {
+        _telemetry.TrackEvent("HomePageVisited");
         return View();
     }
 
     public async Task<IActionResult> Privacy()
     {
-        await UploadFileAsync();
+        _telemetry.TrackEvent("PrivacyPageVisited");
+        //await UploadFileAsync();
         ViewBag.SecretValue = await GetScretVault();
         return View();
     }
