@@ -12,21 +12,26 @@ namespace FirstAzureWebApp.Controllers;
 public class HomeController : Controller
 {
     private readonly TelemetryClient _telemetry;
+    private readonly ILogger<HomeController> _logger;
 
-    public HomeController(TelemetryClient telemetry)
+    public HomeController(TelemetryClient telemetry, ILogger<HomeController> logger)
     {
         _telemetry = telemetry;
+        _logger = logger;
     }
 
     public IActionResult Index()
     {
-        _telemetry.TrackEvent("HomePageVisited");
+        //_telemetry.TrackEvent("HomePageVisited");
+        _logger.LogInformation("Index page visited");
         return View();
     }
 
     public async Task<IActionResult> Privacy()
     {
-        _telemetry.TrackEvent("PrivacyPageVisited");
+        //_telemetry.TrackEvent("PrivacyPageVisited");
+
+        _logger.LogInformation("Privacy page visited");
         //await UploadFileAsync();
         ViewBag.SecretValue = await GetScretVault();
         return View();
