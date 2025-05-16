@@ -23,7 +23,7 @@ public class HomeController : Controller
     public IActionResult Index()
     {
         _telemetry.TrackEvent("TelemetryClient_HomePageVisited");
-        _logger.LogInformation("Index page visited");
+        _logger.LogWarning("Index page visited");
         return View();
     }
 
@@ -31,7 +31,7 @@ public class HomeController : Controller
     {
         _telemetry.TrackEvent("TelemetryClient_PrivacyPageVisited");
 
-        _logger.LogInformation("Privacy page visited");
+        _logger.LogError("Privacy page visited");
         //await UploadFileAsync();
         ViewBag.SecretValue = await GetScretVault();
         return View();
