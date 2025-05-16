@@ -8,7 +8,9 @@ builder.Logging.AddApplicationInsights();
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
-builder.Services.AddApplicationInsightsTelemetry();
+
+builder.Services.AddApplicationInsightsTelemetry(option =>
+    option.ConnectionString = builder.Configuration["ApplicationInsights:ConnectionString"]);
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

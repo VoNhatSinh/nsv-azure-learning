@@ -22,14 +22,14 @@ public class HomeController : Controller
 
     public IActionResult Index()
     {
-        //_telemetry.TrackEvent("HomePageVisited");
+        _telemetry.TrackEvent("TelemetryClient_HomePageVisited");
         _logger.LogInformation("Index page visited");
         return View();
     }
 
     public async Task<IActionResult> Privacy()
     {
-        //_telemetry.TrackEvent("PrivacyPageVisited");
+        _telemetry.TrackEvent("TelemetryClient_PrivacyPageVisited");
 
         _logger.LogInformation("Privacy page visited");
         //await UploadFileAsync();
